@@ -12,7 +12,6 @@
 // // Ovoz yozish tugallanganda ishlov berish
 // recognition.onresult = function(event) {
 //   const transcript = event.results[0][0].transcript;
-//   console.log('Natija:', transcript);
 //   // Natijani interfeysga qo'shish yoki qayta ishlash
 //   document.getElementById('output').textContent = transcript;
 // };
@@ -35,7 +34,9 @@
 
 
 const startButton = document.getElementById("start-btn");
-      const outputDiv = document.getElementById("output");
+const outputDiv = document.getElementById("output");
+const text_1 = document.getElementById("text_1")
+
 
       const recognition = new (window.SpeechRecognition ||
         window.webkitSpeechRecognition ||
@@ -48,17 +49,41 @@ const startButton = document.getElementById("start-btn");
 
       recognition.onstart = () => {
         startButton.textContent = "Jarayonda...";
+
+          const createButton = document.getElementById('buttonContainer');
+          createButton.innerHTML = ""
       };
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
-        outputDiv.textContent = transcript;
+        outputDiv.textContent = "Natija: " + transcript;
+
+        const newButton = document.createElement("button");
+        newButton.className = 'btn2'
+        document.getElementById('text_2').innerText = "2)";
+        newButton.textContent = "Internetdan qidirish";
+        document.getElementById("buttonContainer").appendChild(newButton);
+      };  
+
+      document.getElementById("buttonContainer").addEventListener("click", () =>{
+        const searchText= document.getElementById("output").textContent;
+        const searchURL = `https://www.google.com/search?q=${encodeURIComponent(searchText)}`;
+
+        window.open(searchURL, '_blank');
+      })
+
+      recognition.onerror = function() {
+        outputDiv.textContent = 'Xatolik yuz berdi: ovoz yozilmadi';
+        startBtn.disabled = false; // Tugmani qayta yoqish
+        startBtn.textContent = 'Ovoz yozishni boshlash';
       };
 
       recognition.onend = () => {
-        startButton.textContent = "Qaytadan boshlang";
+        startButton.textContent = "Qaytadan boshlang";    
       };
 
       startButton.addEventListener("click", () => {
+  
+
         recognition.start();
       });
